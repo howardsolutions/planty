@@ -1,4 +1,11 @@
-import { Text, TouchableOpacity, View, StyleSheet, Alert } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  Alert,
+  Pressable,
+} from "react-native";
 import { theme } from "../theme";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 
@@ -6,12 +13,14 @@ type ShoppingListItemProps = {
   name: string;
   isCompleted?: boolean;
   onDelete: () => void;
+  onToggleComplete: () => void;
 };
 
 function ShoppingListItem({
   name,
   isCompleted,
   onDelete,
+  onToggleComplete,
 }: ShoppingListItemProps) {
   function handleDelete() {
     Alert.alert(
@@ -33,11 +42,12 @@ function ShoppingListItem({
   }
 
   return (
-    <View
+    <Pressable
       style={[
         styles.itemContainer,
         isCompleted ? styles.completedContainer : undefined,
       ]}
+      onPress={onToggleComplete}
     >
       <View style={styles.row}>
         <Entypo
@@ -62,7 +72,7 @@ function ShoppingListItem({
           color={isCompleted ? theme.colorGrey : theme.colorRed}
         />
       </TouchableOpacity>
-    </View>
+    </Pressable>
   );
 }
 
