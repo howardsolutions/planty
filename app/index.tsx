@@ -7,22 +7,21 @@ type ShoppingListItemType = {
   id: string;
   name: string;
   completedAtTimestamp?: number;
+  lastUpdatedTimestamp: number;
 };
 
-const initialList: ShoppingListItemType[] = [
-  { id: "1", name: "Coffee" },
-  { id: "2", name: "Tea" },
-  { id: "3", name: "Milk" },
-];
-
 export default function App() {
-  const [shoppingList, setShoppingList] = useState(initialList);
+  const [shoppingList, setShoppingList] = useState<ShoppingListItemType[]>([]);
   const [value, setValue] = useState<string>();
 
   const handleSubmit = () => {
     if (value) {
       const newShoppingList = [
-        { id: new Date().toISOString(), name: value },
+        {
+          id: new Date().toISOString(),
+          name: value,
+          lastUpdatedTimestamp: Date.now(),
+        },
         ...shoppingList,
       ];
       setShoppingList(newShoppingList);
@@ -38,6 +37,7 @@ export default function App() {
           completedAtTimestamp: item.completedAtTimestamp
             ? undefined
             : Date.now(),
+          lastUpdatedTimestamp: Date.now(),
         };
       } else {
         return item;
@@ -63,7 +63,7 @@ export default function App() {
           returnKeyType="done"
         />
       }
-      data={shoppingList}
+      data={orderShoppingList(shoppingList)}
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
       stickyHeaderIndices={[0]}
@@ -109,3 +109,25 @@ const styles = StyleSheet.create({
     marginVertical: 18,
   },
 });
+
+function orderShoppingList(shoppingList: ShoppingListItemType[]) {
+  return shoppingList.sort((item1, item2) => {
+    if (item1.completedAtTimestamp && item2.completedAtTimestamp) {
+      return item2.completedAtTimestamp - item1.completedAtTimestamp;
+    }
+
+    if (item1.completedAtTimestamp && !item2.completedAtTimestamp) {
+      return 1;
+    }
+
+    if (!item1.completedAtTimestamp && item2.completedAtTimestamp) {
+      return -1;
+    }
+
+    if (!item1.completedAtTimestamp && !item2.completedAtTimestamp) {
+      return item2.lastUpdatedTimestamp - item1.lastUpdatedTimestamp;
+    }
+
+    return 0;
+  });
+}
