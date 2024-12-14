@@ -29,6 +29,11 @@ export default function App() {
     }
   };
 
+  function handleDelete(id: string) {
+    const newShoppingList = shoppingList.filter((item) => item.id !== id);
+    setShoppingList(newShoppingList);
+  }
+
   return (
     <FlatList
       ListHeaderComponent={
@@ -45,7 +50,12 @@ export default function App() {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
       stickyHeaderIndices={[0]}
-      renderItem={({ item }) => <ShoppingListItem name={item.name} />}
+      renderItem={({ item }) => (
+        <ShoppingListItem
+          name={item.name}
+          onDelete={() => handleDelete(item.id)}
+        />
+      )}
       ListEmptyComponent={
         <View style={styles.listEmptyContainer}>
           <Text>Your shopping list is empty</Text>

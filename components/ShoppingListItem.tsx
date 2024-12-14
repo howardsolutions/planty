@@ -5,9 +5,14 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 type ShoppingListItemProps = {
   name: string;
   isCompleted?: boolean;
+  onDelete: () => void;
 };
 
-function ShoppingListItem({ name, isCompleted }: ShoppingListItemProps) {
+function ShoppingListItem({
+  name,
+  isCompleted,
+  onDelete,
+}: ShoppingListItemProps) {
   function handleDelete() {
     Alert.alert(
       "Are you sure you want to delete this?",
@@ -16,7 +21,7 @@ function ShoppingListItem({ name, isCompleted }: ShoppingListItemProps) {
       [
         {
           text: "Yes",
-          onPress: () => console.log("Ok, deleting"),
+          onPress: () => onDelete(),
           style: "destructive",
         },
         {
