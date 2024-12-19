@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TextInput, View } from "react-native";
 import ShoppingListItem from "../components/ShoppingListItem";
 import { theme } from "../theme";
+import { getFromStorage, saveToStorage } from "../utils/storage";
 
 type ShoppingListItemType = {
   id: string;
@@ -10,9 +11,21 @@ type ShoppingListItemType = {
   lastUpdatedTimestamp: number;
 };
 
+const storageKey = "shopping-list";
+
 export default function App() {
   const [shoppingList, setShoppingList] = useState<ShoppingListItemType[]>([]);
   const [value, setValue] = useState<string>();
+
+  useEffect(() => {
+    async function fetchInitial() {
+      const data = await getFromStorage(storageKey);
+
+      if (data) setShoppingList(data);
+    }
+
+    fetchInitial();
+  }, []);
 
   const handleSubmit = () => {
     if (value) {
@@ -25,6 +38,7 @@ export default function App() {
         ...shoppingList,
       ];
       setShoppingList(newShoppingList);
+      saveToStorage(storageKey, newShoppingList);
       setValue(undefined);
     }
   };
@@ -44,11 +58,13 @@ export default function App() {
       }
     });
     setShoppingList(newShoppingList);
+    saveToStorage(storageKey, newShoppingList);
   };
 
   function handleDelete(id: string) {
     const newShoppingList = shoppingList.filter((item) => item.id !== id);
     setShoppingList(newShoppingList);
+    saveToStorage(storageKey, newShoppingList);
   }
 
   return (
