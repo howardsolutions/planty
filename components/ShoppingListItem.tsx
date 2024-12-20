@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { theme } from "../theme";
 import { AntDesign, Entypo } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 
 type ShoppingListItemProps = {
   name: string;
@@ -23,6 +24,7 @@ function ShoppingListItem({
   onToggleComplete,
 }: ShoppingListItemProps) {
   function handleDelete() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     Alert.alert(
       "Are you sure you want to delete this?",
       "It will be gone",
